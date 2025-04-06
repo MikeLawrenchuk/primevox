@@ -1,0 +1,15 @@
+[project]
+name = "primevox"
+version = "0.1.0"
+description = "primevox is a Python SDK for analyzing prime number properties, twin primes, prime gaps, factoring composite numbers, and implementing efficient number-theoretic algorithms."
+authors = [
+    {name = "Mike Lawrenchuk", email = "25318794+MikeLawrenchuk@users.noreply.github.com"}
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

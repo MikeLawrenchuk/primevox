@@ -1,0 +1,23 @@
+# macOS files
+.DS_Store
+
+# Python virtual environments
+venv/
+.env/
+.venv/
+
+# Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+
+# Jupyter notebook checkpoints (if using notebooks)
+.ipynb_checkpoints/
+
+# IDE configuration (optional)
+.vscode/
+.idea/
