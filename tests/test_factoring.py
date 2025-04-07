@@ -25,6 +25,7 @@ def test_pollards_rho():
 
     assert composite % factor_result == 0
     assert factor_result in [83, 97]
+    assert factor_result not in [1, composite]
 
 def test_brent_factor():
     composite = 10403  # Known composite: 101 * 103
@@ -32,9 +33,10 @@ def test_brent_factor():
 
     assert composite % factor_result == 0
     assert factor_result in [101, 103]
+    assert factor_result not in [1, composite]
 
 def test_factor_large_number():
-    number = 1001  # Known small number (factors clearly 7, 11, 13)
+    number = 1001  # Known factors: 7, 11, 13
     start_digits = '000001'
     end_digits = '000100'
 
@@ -51,11 +53,13 @@ def test_factor_large_number():
     factor_large_number(larger_number, start_digits, end_digits)
 
 def test_prime_input_pollards_rho():
-    # Pollard's Rho explicitly on prime input returns the number itself
+    # Pollard's Rho explicitly on prime input returns the number itself or 1
     prime = 101
-    assert pollards_rho(prime) == prime or pollards_rho(prime) == 1
+    factor_result = pollards_rho(prime)
+    assert factor_result in [prime, 1]
 
 def test_prime_input_brent_factor():
-    # Brent's factor explicitly on prime input returns the number itself
+    # Brent's factor explicitly on prime input returns the number itself or 1
     prime = 103
-    assert brent_factor(prime) == prime or brent_factor(prime) == 1
+    factor_result = brent_factor(prime)
+    assert factor_result in [prime, 1]

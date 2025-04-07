@@ -11,22 +11,31 @@ def generate_candidate_primes(start, end):
     return [p for p in primes if str(p)[-1] in '1379']
 
 def pollards_rho(n):
-    """Pollard's Rho algorithm for integer factorization."""
+    """Pollard's Rho algorithm for integer factorization, robustly avoiding trivial factors."""
     if n % 2 == 0: return 2
     if n % 3 == 0: return 3
-    c = random.randint(1, n - 1)
-    f = lambda x: (pow(x, 2, n) + c) % n
-    x, y, d = 2, 2, 1
-    while d == 1:
-        x = f(x)
-        y = f(f(y))
-        d = math.gcd(abs(x - y), n)
-    return d
+    if isprime(n): return n
+
+    def f(x, c, mod):
+        return (pow(x, 2, mod) + c) % mod
+
+    for _ in range(5):  # Retry a few times for different c values
+        c = random.randint(1, n - 1)
+        x, y, d = random.randint(2, n - 1), random.randint(2, n - 1), 1
+        while d == 1:
+            x = f(x, c, n)
+            y = f(f(y, c, n), c, n)
+            d = math.gcd(abs(x - y), n)
+        if d != n:
+            return d
+    return n
 
 def brent_factor(n):
-    """Brent's Algorithm for integer factorization."""
+    """Brent's Algorithm for integer factorization, robustly handling edge cases."""
     if n % 2 == 0: return 2
     if n % 3 == 0: return 3
+    if isprime(n): return n
+
     y, c, m = random.randrange(1, n), random.randrange(1, n), random.randrange(1, n)
     g, r, q = 1, 1, 1
     while g == 1:
@@ -61,7 +70,7 @@ def save_factors_csv(number, factors, filename):
     print(f"Results saved to {filename}")
 
 def factor_large_number(number, start_digits, end_digits):
-    """Factorize a number utilizing candidate primes, Brent, and Pollard algorithms."""
+    """Factorize a number utilizing candidate primes, Brent, and Pollard algorithms robustly."""
     factors, original_number = {}, number
     start_time = time.time()
 
@@ -93,7 +102,7 @@ def factor_large_number(number, start_digits, end_digits):
         if not factored:
             print("Trying Brent’s Algorithm...")
             factor = brent_factor(number)
-            if factor and factor != number:
+            if factor not in [1, number]:
                 count = 0
                 while number % factor == 0:
                     count += 1
@@ -106,7 +115,7 @@ def factor_large_number(number, start_digits, end_digits):
         if not factored:
             print("Trying Pollard’s Rho Algorithm...")
             factor = pollards_rho(number)
-            if factor and factor != number:
+            if factor not in [1, number]:
                 count = 0
                 while number % factor == 0:
                     count += 1
@@ -138,21 +147,5 @@ def factor_large_number(number, start_digits, end_digits):
     print(f"\nTotal factorization time: {duration:.2f} seconds.")
     save_factors_csv(original_number, factors, f"factoring_results_{int(time.time())}.csv")
 
-def interactive_factorization():
-    """Interactive console for factoring large numbers."""
-    try:
-        number_str = input("Enter number (up to 50 digits): ").strip()
-        if not number_str.isdigit() or len(number_str) > 50:
-            raise ValueError("Input must be numeric with up to 50 digits.")
-        number = int(number_str)
-        start_digits = input("Enter start digits for prime candidate generation (6 digits recommended): ").strip()
-        end_digits = input("Enter end digits for prime candidate generation (6 digits recommended): ").strip()
-        factor_large_number(number, start_digits, end_digits)
-    except ValueError as ve:
-        print(f"Error: {ve}")
-    except Exception as e:
-        print(f"An unexpected error has occurred: {e}")
-
-# Optional: Execute interactive factorization directly when running this module
 if __name__ == "__main__":
     interactive_factorization()
