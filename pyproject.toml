@@ -1,26 +1,22 @@
-[project]
-name = "primevox"
-version = "0.1.0"
-description = "primevox is a Python SDK for analyzing prime number properties, twin primes, prime gaps, factoring composite numbers, and implementing efficient number-theoretic algorithms."
-authors = [
-    { name = "MikeLawrenchuk", email = "25318794+MikeLawrenchuk@users.noreply.github.com" }
-]
-license = { text = "MIT" }
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
-
-[project.optional-dependencies]
-dev = ["pytest"]
-
 [tool.poetry]
-packages = [{ include = "pv_sdk" }]
-package-mode = true
+name = "PrimeVox"
+version = "0.1.0"
+description = "An SDK and analysis toolkit for prime numbers and vowel mappings."
+authors = ["Your Name <youremail@example.com>"]
 
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8"
+[tool.poetry.dependencies]
+python = "^3.11"
+sympy = "^1.12"
+networkx = "^3.2.1"
+matplotlib = "^3.8.2"
+scipy = "^1.11.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+black = "^23.11.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
