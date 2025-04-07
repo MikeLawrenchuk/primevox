@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 # macOS files
 .DS_Store
 
@@ -17,6 +28,19 @@ dist/
 
 # Jupyter notebook checkpoints (if using notebooks)
 .ipynb_checkpoints/
+
+# Temporary data and generated files
+*.pkl
+*.json
+*.csv
+*.png
+
+
+
+
+
+
+
 
 # IDE configuration (optional)
 .vscode/
