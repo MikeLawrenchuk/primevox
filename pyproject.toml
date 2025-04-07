@@ -2,8 +2,10 @@
 name = "primevox"
 version = "0.1.0"
 description = "primevox is a Python SDK for analyzing prime number properties, twin primes, prime gaps, factoring composite numbers, and implementing efficient number-theoretic algorithms."
-authors = [{ name = "MikeLawrenchuk", email = "25318794+MikeLawrenchuk@users.noreply.github.com" }]
-license = {text = "MIT"}
+authors = [
+    { name = "MikeLawrenchuk", email = "25318794+MikeLawrenchuk@users.noreply.github.com" }
+]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
