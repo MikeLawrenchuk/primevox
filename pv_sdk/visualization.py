@@ -22,7 +22,6 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
         'A': 'red', 'E': 'blue', 'I': 'green',
         'O': 'orange', 'U': 'purple', 'Y': 'gray'
     }
-    node_colors = [color_map.get(vowel, 'black') for vowel in vowel_mappings]
 
     vowel_groups = {}
     for prime, vowel in zip(primes, vowel_mappings):
@@ -39,6 +38,17 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
     # Graph visualization setup
     pos = nx.spring_layout(graph, seed=42)
     plt.figure(figsize=(12, 9))
+
+    # Explicitly match colors exactly to graph nodes
+    node_colors = [
+        color_map.get(vowel_mappings[primes.index(node)], 'black') 
+        for node in graph.nodes()
+    ]
+
+    # Debug verification statements (optional)
+    print("Nodes in graph:", graph.nodes())
+    print("Node colors count:", len(node_colors))
+
     nx.draw_networkx(
         graph,
         pos=pos,
@@ -107,6 +117,6 @@ def interactive_visualization():
         for node, centrality_value in values.items():
             print(f"Prime {node}: {centrality_value:.3f}")
 
-# Interactive main execution clearly provided
+# Interactive main execution
 if __name__ == "__main__":
     interactive_visualization()
