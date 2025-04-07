@@ -30,18 +30,25 @@ def analyze_graph_properties(graph: nx.Graph) -> Dict:
         Dict: Dictionary of graph properties, including connectivity,
               degree distribution, cliques information, and average degree.
     """
-    connectivity = nx.is_connected(graph)
+    if len(graph) == 0:
+        connectivity = False
+        degree_distribution = {}
+        total_cliques = 0
+        maximal_cliques_count = 0
+        avg_degree = 0.0
+    else:
+        connectivity = nx.is_connected(graph)
+        degree_distribution = dict(graph.degree())
+        total_cliques = sum(nx.number_of_cliques(graph).values())
+        maximal_cliques = list(nx.find_cliques(graph))
+        avg_degree = sum(degree_distribution.values()) / len(degree_distribution)
+        maximal_cliques_count = len(maximal_cliques)
 
-    degree_distribution = dict(graph.degree())
-    total_cliques = sum(nx.number_of_cliques(graph).values())
-    maximal_cliques = list(nx.find_cliques(graph))
-    avg_degree = sum(degree_distribution.values()) / len(degree_distribution) if degree_distribution else 0
-    
     return {
         'connectivity': connectivity,
         'degree_distribution': degree_distribution,
         'total_cliques': total_cliques,
-        'maximal_cliques_count': len(maximal_cliques),
+        'maximal_cliques_count': maximal_cliques_count,
         'avg_degree': avg_degree
     }
 
