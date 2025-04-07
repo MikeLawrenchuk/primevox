@@ -1,1 +1,6 @@
-{}
+{
+    "recent_prime_analysis": {
+        "prime_limit": 50,
+        "found_primes": 15
+    }
+}
