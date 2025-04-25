@@ -45,3 +45,4 @@ dist/
 # IDE configuration (optional)
 .vscode/
 .idea/
+development/
