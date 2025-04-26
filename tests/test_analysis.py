@@ -3,8 +3,9 @@ import networkx as nx
 from pv_sdk.analysis import (
     explore_modular_arithmetic,
     analyze_graph_properties,
-    perform_statistical_analysis
+    perform_statistical_analysis,
 )
+
 
 def test_explore_modular_arithmetic():
     primes = [2, 3, 5, 7, 11, 13]
@@ -16,6 +17,7 @@ def test_explore_modular_arithmetic():
     # Test invalid modulus clearly raises error
     with pytest.raises(ValueError):
         explore_modular_arithmetic(primes, 0)
+
 
 def test_analyze_graph_properties():
     graph = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 1)])
@@ -35,6 +37,7 @@ def test_analyze_graph_properties():
     assert result_empty["connectivity"] is False
     assert result_empty["avg_degree"] == 0
     assert result_empty["degree_distribution"] == {}
+
 
 def test_perform_statistical_analysis():
     frequency = {"A": 10, "B": 20, "C": 30, "D": 40}

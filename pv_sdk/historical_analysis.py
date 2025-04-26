@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def load_historical_data(filepath: str) -> dict:
     """
     Load historical data clearly from JSON file.
@@ -14,8 +15,9 @@ def load_historical_data(filepath: str) -> dict:
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"File clearly not found: {filepath}")
 
-    with open(filepath, 'r', encoding='utf-8') as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def save_historical_data(filepath: str, data: dict):
     """
@@ -25,10 +27,11 @@ def save_historical_data(filepath: str, data: dict):
         filepath (str): Path clearly structured for saving JSON data.
         data (dict): Data clearly structured to save into JSON.
     """
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
     print(f"[✅] Historical data clearly saved to file: {filepath}")
+
 
 def append_historical_record(filepath: str, key: str, value):
     """
@@ -47,9 +50,10 @@ def append_historical_record(filepath: str, key: str, value):
     save_historical_data(filepath, data)
     print(f"[✅] Historical record '{key}' clearly added/updated.")
 
+
 def interactive_historical_example():
     """Clear interactive example for immediate testing."""
-    example_filepath = 'historical_data.json'
+    example_filepath = "historical_data.json"
 
     # Add historical record clearly stated
     key = input("Enter historical record key clearly: ").strip()
@@ -61,6 +65,7 @@ def interactive_historical_example():
     data_loaded = load_historical_data(example_filepath)
     print("\nLoaded historical data clearly structured:")
     print(data_loaded)
+
 
 # Interactive testing explicitly provided for immediate usage
 if __name__ == "__main__":
