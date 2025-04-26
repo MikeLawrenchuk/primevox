@@ -4,17 +4,22 @@ import csv
 import time
 import math
 
+
 def generate_candidate_primes(start, end):
     """Generate primes excluding those ending with even digits."""
     start, end = sorted([start, end])
     primes = primerange(start, end)
-    return [p for p in primes if str(p)[-1] in '1379']
+    return [p for p in primes if str(p)[-1] in "1379"]
+
 
 def pollards_rho(n):
     """Pollard's Rho algorithm for integer factorization, robustly avoiding trivial factors."""
-    if n % 2 == 0: return 2
-    if n % 3 == 0: return 3
-    if isprime(n): return n
+    if n % 2 == 0:
+        return 2
+    if n % 3 == 0:
+        return 3
+    if isprime(n):
+        return n
 
     def f(x, c, mod):
         return (pow(x, 2, mod) + c) % mod
@@ -30,11 +35,15 @@ def pollards_rho(n):
             return d
     return n
 
+
 def brent_factor(n):
     """Brent's Algorithm for integer factorization, robustly handling edge cases."""
-    if n % 2 == 0: return 2
-    if n % 3 == 0: return 3
-    if isprime(n): return n
+    if n % 2 == 0:
+        return 2
+    if n % 3 == 0:
+        return 3
+    if isprime(n):
+        return n
 
     y, c, m = random.randrange(1, n), random.randrange(1, n), random.randrange(1, n)
     g, r, q = 1, 1, 1
@@ -59,15 +68,17 @@ def brent_factor(n):
                     break
     return g
 
+
 def save_factors_csv(number, factors, filename):
     """Save factorization results clearly to CSV."""
-    with open(filename, 'w', newline='') as csvfile:
+    with open(filename, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(['Number', 'Prime Factor', 'Power', 'Timestamp'])
-        timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+        writer.writerow(["Number", "Prime Factor", "Power", "Timestamp"])
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         for prime, power in factors.items():
             writer.writerow([number, prime, power, timestamp])
     print(f"Results saved to {filename}")
+
 
 def factor_large_number(number, start_digits, end_digits):
     """Factorize a number utilizing candidate primes, Brent, and Pollard algorithms robustly."""
@@ -75,7 +86,7 @@ def factor_large_number(number, start_digits, end_digits):
     start_time = time.time()
 
     print(f"Starting factorization...\nNumber: {number}")
-    
+
     while number > 1:
         if isprime(number):
             factors[number] = factors.get(number, 0) + 1
@@ -145,7 +156,10 @@ def factor_large_number(number, start_digits, end_digits):
         print(f"{prime}^{power}")
 
     print(f"\nTotal factorization time: {duration:.2f} seconds.")
-    save_factors_csv(original_number, factors, f"factoring_results_{int(time.time())}.csv")
+    save_factors_csv(
+        original_number, factors, f"factoring_results_{int(time.time())}.csv"
+    )
+
 
 if __name__ == "__main__":
     interactive_factorization()

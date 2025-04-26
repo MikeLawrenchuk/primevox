@@ -3,7 +3,10 @@ import networkx as nx
 from typing import List, Dict
 from networkx.algorithms.community import girvan_newman
 
-def graphical_representation_with_labels(primes: List[int], vowel_mappings: List[str], output_file='prime_vowel_graph.png') -> nx.Graph:
+
+def graphical_representation_with_labels(
+    primes: List[int], vowel_mappings: List[str], output_file="prime_vowel_graph.png"
+) -> nx.Graph:
     """
     Visualize prime-vowel mappings with explicit labels and save to a specified file.
 
@@ -19,8 +22,12 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
 
     # Define node colors according to vowel assignments
     color_map = {
-        'A': 'red', 'E': 'blue', 'I': 'green',
-        'O': 'orange', 'U': 'purple', 'Y': 'gray'
+        "A": "red",
+        "E": "blue",
+        "I": "green",
+        "O": "orange",
+        "U": "purple",
+        "Y": "gray",
     }
 
     vowel_groups = {}
@@ -32,7 +39,7 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
         graph.add_edges_from(
             (primes_list[i], primes_list[j])
             for i in range(len(primes_list))
-            for j in range(i+1, len(primes_list))
+            for j in range(i + 1, len(primes_list))
         )
 
     # Graph visualization setup
@@ -41,7 +48,7 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
 
     # Explicitly match colors exactly to graph nodes
     node_colors = [
-        color_map.get(vowel_mappings[primes.index(node)], 'black') 
+        color_map.get(vowel_mappings[primes.index(node)], "black")
         for node in graph.nodes()
     ]
 
@@ -53,19 +60,20 @@ def graphical_representation_with_labels(primes: List[int], vowel_mappings: List
         graph,
         pos=pos,
         node_color=node_colors,
-        edge_color='gray',
+        edge_color="gray",
         alpha=0.8,
         with_labels=True,
         font_size=8,
-        node_size=200
+        node_size=200,
     )
 
     # Title and save visualization
-    plt.title('Prime-Vowel Graph with Labels')
-    plt.savefig(output_file, format='png', dpi=300)
+    plt.title("Prime-Vowel Graph with Labels")
+    plt.savefig(output_file, format="png", dpi=300)
     plt.show()
 
     return graph
+
 
 def detect_graph_communities(graph: nx.Graph) -> List[List[int]]:
     """
@@ -81,6 +89,7 @@ def detect_graph_communities(graph: nx.Graph) -> List[List[int]]:
     communities = next(communities_generator)
     return [list(community) for community in communities]
 
+
 def calculate_centrality_measures(graph: nx.Graph) -> Dict[str, Dict[int, float]]:
     """
     Calculates centrality measures (degree, betweenness, closeness).
@@ -92,15 +101,16 @@ def calculate_centrality_measures(graph: nx.Graph) -> Dict[str, Dict[int, float]
         Dict[str, Dict[int, float]]: A dictionary of centrality dictionaries.
     """
     return {
-        'degree_centrality': nx.degree_centrality(graph),
-        'betweenness_centrality': nx.betweenness_centrality(graph),
-        'closeness_centrality': nx.closeness_centrality(graph)
+        "degree_centrality": nx.degree_centrality(graph),
+        "betweenness_centrality": nx.betweenness_centrality(graph),
+        "closeness_centrality": nx.closeness_centrality(graph),
     }
+
 
 def interactive_visualization():
     """Interactive visualization and analysis tool for quick validation."""
     primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-    vowels = ['E', 'I', 'O', 'U', 'A', 'I', 'U', 'Y', 'A', 'I']
+    vowels = ["E", "I", "O", "U", "A", "I", "U", "Y", "A", "I"]
 
     print("Generating Graph Visualization...")
     graph = graphical_representation_with_labels(primes, vowels)
@@ -116,6 +126,7 @@ def interactive_visualization():
         print(f"\n{measure.capitalize()}:")
         for node, centrality_value in values.items():
             print(f"Prime {node}: {centrality_value:.3f}")
+
 
 # Interactive main execution
 if __name__ == "__main__":
