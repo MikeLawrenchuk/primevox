@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 # macOS files
 .DS_Store
 
@@ -26,7 +15,7 @@ build/
 dist/
 *.egg-info/
 
-# Jupyter notebook checkpoints (if using notebooks)
+# Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
 # Temporary data and generated files
@@ -35,14 +24,12 @@ dist/
 *.csv
 *.png
 
-
-
-
-
-
-
-
-# IDE configuration (optional)
+# IDE configuration (recommended)
 .vscode/
 .idea/
-development/
+
+# Test and coverage artifacts (recommended)
+.coverage
+htmlcov/
+.pytest_cache/
+
