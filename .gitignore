@@ -33,3 +33,6 @@ dist/
 htmlcov/
 .pytest_cache/
 
+# Ignore all build artifacts in development/
+development/
+
