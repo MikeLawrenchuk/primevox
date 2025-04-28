@@ -1,8 +1,9 @@
-from sympy import primerange, factorint, isprime
-import random
 import csv
-import time
 import math
+import random
+import time
+
+from sympy import factorint, isprime, primerange
 
 
 def generate_candidate_primes(start, end):
@@ -159,6 +160,11 @@ def factor_large_number(number, start_digits, end_digits):
     save_factors_csv(
         original_number, factors, f"factoring_results_{int(time.time())}.csv"
     )
+
+def interactive_factorization():
+    # TODO: Implement the interactive factorization logic here
+    print("Interactive factorization is not yet implemented.")
+
 
 
 if __name__ == "__main__":
