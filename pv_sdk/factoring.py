@@ -1,180 +1,165 @@
-import csv
-import math
+"""
+High-performance integer factorization module for PrimeVox SDK.
+
+This module provides functions to factor large composites (up to ~40 digits)
+using Pollard's Rho with Brent's cycle detection, plus a deterministic Miller-Rabin
+primality test for 64-bit numbers.
+
+Public API:
+  - prime_to_vowel_notation(prime: int) -> str
+  - factor(n: int) -> List[int]
+  - factor_frequencies(n: int) -> Dict[int, int]
+  - factor_and_map(n: int) -> List[str]
+"""
 import random
-import time
+import math
+import logging
+from typing import List, Optional, Dict
 
-from sympy import factorint, isprime, primerange
+logger = logging.getLogger(__name__)
 
+_digit_to_vowel: Dict[str, str] = {
+    '1': 'A',  # primes ending in 1 → A
+    '3': 'E',  # primes ending in 3 → E
+    '5': 'Y',  # primes ending in 5 → Y
+    '7': 'I',  # primes ending in 7 → I
+    '9': 'O',  # primes ending in 9 → O
+}
 
-def generate_candidate_primes(start, end):
-    """Generate primes excluding those ending with even digits."""
-    start, end = sorted([start, end])
-    primes = primerange(start, end)
-    return [p for p in primes if str(p)[-1] in "1379"]
+def prime_to_vowel_notation(prime: int) -> str:
+    """
+    Map a prime number to its vowel notation based on its final digit.
 
+    Special case:
+      - 2 -> 'U'
 
-def pollards_rho(n, max_iterations=10000, retries=5):
-    """Pollard's Rho algorithm for integer factorization, robustly avoiding trivial factors."""
+    Args:
+        prime: A prime integer.
+    Returns:
+        A string of vowel characters representing the prime.
+    """
+    if prime == 2:
+        return 'U'
+    return ''.join(_digit_to_vowel.get(d, d) for d in str(prime))
+
+def _pollards_rho_brent(n: int, max_iter: int = 100_000) -> Optional[int]:
+    """
+    Pollard's Rho algorithm with Brent's cycle detection to find a nontrivial factor.
+
+    Args:
+        n: Composite integer to factor.
+        max_iter: Maximum cycle iterations before giving up.
+    Returns:
+        A nontrivial factor of n, or None if it fails.
+    """
     if n % 2 == 0:
         return 2
-    if n % 3 == 0:
-        return 3
-    if isprime(n):
-        return n
+    y = random.randrange(1, n)
+    c = random.randrange(1, n)
+    m = random.randrange(1, n)
+    g = r = q = 1
+    x = y
 
-    def f(x, c, mod):
-        return (pow(x, 2, mod) + c) % mod
+    while g == 1 and r < max_iter:
+        x = y
+        for _ in range(r):
+            y = (y * y + c) % n
+        k = 0
+        while k < r and g == 1:
+            ys = y
+            for _ in range(min(m, r - k)):
+                y = (y * y + c) % n
+                q = (q * abs(x - y)) % n
+            g = math.gcd(q, n)
+            k += m
+        r *= 2
 
-    for _ in range(retries):  # Retry a few times for different c values
-        c = random.randint(1, n - 1)
-        x, y, d = random.randint(2, n - 1), random.randint(2, n - 1), 1
-        iterations = 0
-        while d == 1 and iterations < max_iterations:
-            x = f(x, c, n)
-            y = f(f(y, c, n), c, n)
-            d = math.gcd(abs(x - y), n)
-            iterations += 1
-        if d != n and d != 1:
-            return d
-    return None  # Explicitly indicate if factoring failed after retries
+    if g is None or g == n:
+        while True:
+            ys = (ys * ys + c) % n  # type: ignore
+            g = math.gcd(abs(x - ys), n)
+            if g and g < n:
+                break
 
+    return g if g and g < n else None
 
-def brent_factor(n, max_iterations=10000, retries=5):
-    """Brent's algorithm for robust integer factorization."""
-    if n % 2 == 0:
-        return 2
-    if isprime(n):
-        return n
+def _is_prime(n: int) -> bool:
+    """
+    Deterministic Miller-Rabin for n < 2^64 using fixed bases.
 
-    for attempt in range(retries):
-        y, c, m = (
-            random.randint(1, n - 1),
-            random.randint(1, n - 1),
-            random.randint(1, n - 1),
-        )
-        g, r, q = 1, 1, 1
+    Args:
+        n: Integer to test.
+    Returns:
+        True if n is (probably) prime, False otherwise.
+    """
+    if n < 2:
+        return False
+    small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+    for p in small_primes:
+        if n == p:
+            return True
+        if n % p == 0:
+            return False
+    d, s = n - 1, 0
+    while not d & 1:
+        d >>= 1
+        s += 1
+    for a in (2, 325, 9375, 28178, 450775, 9780504, 1795265022):
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(s - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
 
-        while g == 1 and r < max_iterations:
-            x = y
-            for _ in range(r):
-                y = (pow(y, 2, n) + c) % n
-            k = 0
-            while k < r and g == 1:
-                ys = y
-                for _ in range(min(m, r - k)):
-                    y = (pow(y, 2, n) + c) % n
-                    q = q * abs(x - y) % n
-                g = math.gcd(q, n)
-                k += m
-            r *= 2
+def factor(n: int) -> List[int]:
+    """
+    Recursively factor an integer into its prime factors.
 
-        if g == n:
-            while True:
-                ys = (pow(ys, 2, n) + c) % n
-                g = math.gcd(abs(x - ys), n)
-                if g > 1:
-                    break
-        if 1 < g < n:
-            return g  # valid factor found clearly
-    return None  # Explicit failure if no factor found after retries
+    Args:
+        n: Integer > 1 to factor.
+    Returns:
+        A list of prime factors (unsorted).
+    """
+    if n <= 1:
+        return []
+    for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29):
+        if n % p == 0:
+            return [p] + factor(n // p)
+    if _is_prime(n):
+        return [n]
+    divisor = None
+    while divisor is None:
+        divisor = _pollards_rho_brent(n)
+    return factor(divisor) + factor(n // divisor)
 
+def factor_frequencies(n: int) -> Dict[int, int]:
+    """
+    Count prime factor multiplicities for a composite number.
 
-def save_factors_csv(number, factors, filename):
-    """Save factorization results clearly to CSV."""
-    with open(filename, "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(["Number", "Prime Factor", "Power", "Timestamp"])
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        for prime, power in factors.items():
-            writer.writerow([number, prime, power, timestamp])
-    print(f"Results saved to {filename}")
+    Args:
+        n: Integer > 1.
+    Returns:
+        A dict mapping prime -> exponent.
+    """
+    freqs: Dict[int, int] = {}
+    for p in factor(n):
+        freqs[p] = freqs.get(p, 0) + 1
+    return freqs
 
+def factor_and_map(number: int) -> List[str]:
+    """
+    Factor a composite into primes and map each to vowel notation.
 
-def factor_large_number(number, start_digits, end_digits):
-    """Factorize a number utilizing candidate primes, Brent, and Pollard algorithms robustly."""
-    factors, original_number = {}, number
-    start_time = time.time()
+    Args:
+        number: Composite integer to factor.
+    Returns:
+        A list of vowel-mapped factor strings.
+    """
+    from pv_sdk.factoring import prime_to_vowel_notation
 
-    print(f"Starting factorization...\nNumber: {number}")
-
-    while number > 1:
-        if isprime(number):
-            factors[number] = factors.get(number, 0) + 1
-            print(f"Remaining prime identified: {number}")
-            break
-
-        start_range = int(f"{start_digits}0000")
-        end_range = int(f"{end_digits}9999")
-        candidates = generate_candidate_primes(start_range, end_range)
-        factored = False
-
-        # Prime candidates
-        for prime in candidates:
-            count = 0
-            while number % prime == 0:
-                count += 1
-                number //= prime
-                factored = True
-            if count:
-                factors[prime] = factors.get(prime, 0) + count
-                print(f"Identified factor (candidate primes): {prime}^{count}")
-
-        # Brent’s Algorithm
-        if not factored:
-            print("Trying Brent’s Algorithm...")
-            factor = brent_factor(number)
-            if factor not in [1, number]:
-                count = 0
-                while number % factor == 0:
-                    count += 1
-                    number //= factor
-                factors[factor] = factors.get(factor, 0) + count
-                print(f"Identified factor (Brent’s): {factor}^{count}")
-                factored = True
-
-        # Pollard’s Rho as fallback
-        if not factored:
-            print("Trying Pollard’s Rho Algorithm...")
-            factor = pollards_rho(number)
-            if factor not in [1, number]:
-                count = 0
-                while number % factor == 0:
-                    count += 1
-                    number //= factor
-                factors[factor] = factors.get(factor, 0) + count
-                print(f"Identified factor (Pollard’s): {factor}^{count}")
-                factored = True
-
-        # Sympy as ultimate fallback
-        if not factored:
-            print("Using sympy's factorization as final fallback...")
-            sympy_factors = factorint(number)
-            for prime, power in sympy_factors.items():
-                factors[prime] = factors.get(prime, 0) + power
-                print(f"Sympy Identified: {prime}^{power}")
-            break
-
-        # Adjust digits for subsequent iterations
-        start_digits = str(int(start_digits) + 2).zfill(6)
-        end_digits = str(int(end_digits) + 2).zfill(6)
-
-    end_time = time.time()
-    duration = end_time - start_time
-
-    print("\nFinal Factorization Results:")
-    for prime, power in factors.items():
-        print(f"{prime}^{power}")
-
-    print(f"\nTotal factorization time: {duration:.2f} seconds.")
-    save_factors_csv(
-        original_number, factors, f"factoring_results_{int(time.time())}.csv"
-    )
-
-
-def interactive_factorization():
-    # TODO: Implement the interactive factorization logic here
-    print("Interactive factorization is not yet implemented.")
-
-
-if __name__ == "__main__":
-    interactive_factorization()
+    return [prime_to_vowel_notation(p) for p in factor(number)]
