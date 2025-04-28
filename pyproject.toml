@@ -16,6 +16,9 @@ keywords = [
     "computational mathematics"
 ]
 
+packages = [{ include = "pv_sdk" }]
+
+
 [tool.poetry.dependencies]
 python = "^3.11"
 sympy = "^1.12"
