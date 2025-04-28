@@ -1,9 +1,8 @@
-import csv
-import math
+from sympy import primerange, factorint, isprime
 import random
+import csv
 import time
-
-from sympy import factorint, isprime, primerange
+import math
 
 
 def generate_candidate_primes(start, end):
@@ -13,7 +12,7 @@ def generate_candidate_primes(start, end):
     return [p for p in primes if str(p)[-1] in "1379"]
 
 
-def pollards_rho(n):
+def pollards_rho(n, max_iterations=10000, retries=5):
     """Pollard's Rho algorithm for integer factorization, robustly avoiding trivial factors."""
     if n % 2 == 0:
         return 2
@@ -25,16 +24,19 @@ def pollards_rho(n):
     def f(x, c, mod):
         return (pow(x, 2, mod) + c) % mod
 
-    for _ in range(5):  # Retry a few times for different c values
+    for _ in range(retries):  # Retry a few times for different c values
         c = random.randint(1, n - 1)
         x, y, d = random.randint(2, n - 1), random.randint(2, n - 1), 1
-        while d == 1:
+        iterations = 0
+        while d == 1 and iterations < max_iterations:
             x = f(x, c, n)
             y = f(f(y, c, n), c, n)
             d = math.gcd(abs(x - y), n)
-        if d != n:
+            iterations += 1
+        if d != n and d != 1:
             return d
-    return n
+    return None  # Explicitly indicate if factoring failed after retries
+
 
 
 def brent_factor(n):

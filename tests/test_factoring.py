@@ -1,11 +1,13 @@
 import pytest
+from sympy import isprime
+
 from pv_sdk.factoring import (
+    brent_factor,
+    factor_large_number,
     generate_candidate_primes,
     pollards_rho,
-    brent_factor,
-    factor_large_number
 )
-from sympy import isprime
+
 
 @pytest.mark.timeout(5)
 def test_generate_candidate_primes():
