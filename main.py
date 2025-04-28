@@ -1,20 +1,21 @@
-from pv_sdk.prime import generate_primes_and_map, create_composite_mappings
-from pv_sdk.factoring import factor_large_number
+import networkx as nx
+
 from pv_sdk.analysis import (
-    explore_modular_arithmetic,
     analyze_graph_properties,
+    explore_modular_arithmetic,
     perform_statistical_analysis,
 )
-from pv_sdk.visualization import (
-    graphical_representation_with_labels,
-    detect_graph_communities,
-    calculate_centrality_measures,
-)
-from pv_sdk.twin_primes import find_twin_primes, count_twin_primes
-from pv_sdk.documentation import save_to_json, append_timestamp
+from pv_sdk.coloring import TerminalColors, colorize
+from pv_sdk.documentation import append_timestamp, save_to_json
+from pv_sdk.factoring import factor_large_number
 from pv_sdk.historical_analysis import append_historical_record, load_historical_data
-from pv_sdk.coloring import colorize, TerminalColors
-import networkx as nx
+from pv_sdk.prime import create_composite_mappings, generate_primes_and_map
+from pv_sdk.twin_primes import count_twin_primes, find_twin_primes
+from pv_sdk.visualization import (
+    calculate_centrality_measures,
+    detect_graph_communities,
+    graphical_representation_with_labels,
+)
 
 
 def main():
@@ -34,7 +35,7 @@ def main():
 
     # Generate composite mappings clearly defined
     composites = create_composite_mappings(primes, vowels)
-    print(colorize(f"\n✅ Composite mappings sample (first 3):", TerminalColors.GREEN))
+    print(colorize("\n✅ Composite mappings sample (first 3):", TerminalColors.GREEN))
     print(composites[:3])
 
     # Factoring Module clearly demonstrated
@@ -56,7 +57,7 @@ def main():
 
     sample_graph = nx.Graph([(1, 2), (2, 3), (3, 1)])
     graph_analysis = analyze_graph_properties(sample_graph)
-    print(colorize(f"\n📈 Graph analysis results:", TerminalColors.CYAN))
+    print(colorize("\n📈 Graph analysis results:", TerminalColors.CYAN))
     print(graph_analysis)
 
     freq = {"A": 24, "E": 30, "I": 18, "O": 20, "U": 8}
@@ -69,9 +70,9 @@ def main():
     prime_graph.add_edges_from([(2, 3), (3, 5), (5, 7), (7, 2)])
     communities = detect_graph_communities(prime_graph)
     centralities = calculate_centrality_measures(prime_graph)
-    print(colorize(f"\n👥 Graph communities detected:", TerminalColors.BLUE))
+    print(colorize("\n👥 Graph communities detected:", TerminalColors.BLUE))
     print(communities)
-    print(colorize(f"\n📍 Graph centrality measures:", TerminalColors.BLUE))
+    print(colorize("\n📍 Graph centrality measures:", TerminalColors.BLUE))
     print(centralities)
 
     # Twin Prime Module demonstrated explicitly
@@ -103,7 +104,7 @@ def main():
         {"prime_limit": prime_limit, "found_primes": len(primes)},
     )
     historical_data = load_historical_data("historical_data.json")
-    print(colorize(f"\n🗃️ Historical data loaded:", TerminalColors.GREEN))
+    print(colorize("\n🗃️ Historical data loaded:", TerminalColors.GREEN))
     print(historical_data)
 
     print(

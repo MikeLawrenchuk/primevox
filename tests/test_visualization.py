@@ -1,9 +1,9 @@
-import pytest
 import networkx as nx
+
 from pv_sdk.visualization import (
-    graphical_representation_with_labels,
-    detect_graph_communities,
     calculate_centrality_measures,
+    detect_graph_communities,
+    graphical_representation_with_labels,
 )
 
 
