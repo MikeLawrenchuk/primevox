@@ -1,8 +1,9 @@
-import pytest
 import networkx as nx
+import pytest
+
 from pv_sdk.analysis import (
-    explore_modular_arithmetic,
     analyze_graph_properties,
+    explore_modular_arithmetic,
     perform_statistical_analysis,
 )
 

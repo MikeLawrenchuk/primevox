@@ -1,6 +1,7 @@
+from typing import Dict, List
+
 import matplotlib.pyplot as plt
 import networkx as nx
-from typing import List, Dict
 from networkx.algorithms.community import girvan_newman
 
 

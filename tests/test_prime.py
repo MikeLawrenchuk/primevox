@@ -1,9 +1,8 @@
-import pytest
 from pv_sdk.prime import (
+    create_composite_mappings,
+    generate_primes_and_map,
     is_prime,
     prime_to_vowel,
-    generate_primes_and_map,
-    create_composite_mappings,
 )
 
 

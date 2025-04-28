@@ -1,8 +1,9 @@
+import csv
+import itertools
 import os
 import pickle
-import itertools
-from sympy import primerange, isprime
-import csv
+
+from sympy import isprime, primerange
 
 # Efficient vowel mapping dictionary
 PRIME_VOWEL_MAP = {

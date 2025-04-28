@@ -1,6 +1,7 @@
+from typing import Dict, List
+
 import networkx as nx
 from scipy.stats import chisquare
-from typing import List, Dict
 
 
 def explore_modular_arithmetic(primes: List[int], modulus: int) -> Dict[int, int]:

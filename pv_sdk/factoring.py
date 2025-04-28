@@ -1,8 +1,9 @@
-from sympy import primerange, factorint, isprime
-import random
 import csv
-import time
 import math
+import random
+import time
+
+from sympy import factorint, isprime, primerange
 
 
 def generate_candidate_primes(start, end):
@@ -12,7 +13,7 @@ def generate_candidate_primes(start, end):
     return [p for p in primes if str(p)[-1] in "1379"]
 
 
-def pollards_rho(n):
+def pollards_rho(n, max_iterations=10000, retries=5):
     """Pollard's Rho algorithm for integer factorization, robustly avoiding trivial factors."""
     if n % 2 == 0:
         return 2
@@ -24,49 +25,58 @@ def pollards_rho(n):
     def f(x, c, mod):
         return (pow(x, 2, mod) + c) % mod
 
-    for _ in range(5):  # Retry a few times for different c values
+    for _ in range(retries):  # Retry a few times for different c values
         c = random.randint(1, n - 1)
         x, y, d = random.randint(2, n - 1), random.randint(2, n - 1), 1
-        while d == 1:
+        iterations = 0
+        while d == 1 and iterations < max_iterations:
             x = f(x, c, n)
             y = f(f(y, c, n), c, n)
             d = math.gcd(abs(x - y), n)
-        if d != n:
+            iterations += 1
+        if d != n and d != 1:
             return d
-    return n
+    return None  # Explicitly indicate if factoring failed after retries
 
 
-def brent_factor(n):
-    """Brent's Algorithm for integer factorization, robustly handling edge cases."""
+def brent_factor(n, max_iterations=10000, retries=5):
+    """Brent's algorithm for robust integer factorization."""
     if n % 2 == 0:
         return 2
-    if n % 3 == 0:
-        return 3
     if isprime(n):
         return n
 
-    y, c, m = random.randrange(1, n), random.randrange(1, n), random.randrange(1, n)
-    g, r, q = 1, 1, 1
-    while g == 1:
-        x = y
-        for _ in range(r):
-            y = (pow(y, 2, n) + c) % n
-        k = 0
-        while k < r and g == 1:
-            ys = y
-            for _ in range(min(m, r - k)):
+    for attempt in range(retries):
+        y, c, m = (
+            random.randint(1, n - 1),
+            random.randint(1, n - 1),
+            random.randint(1, n - 1),
+        )
+        g, r, q = 1, 1, 1
+
+        while g == 1 and r < max_iterations:
+            x = y
+            for _ in range(r):
                 y = (pow(y, 2, n) + c) % n
-                q = q * abs(x - y) % n
-            g = math.gcd(q, n)
-            k += m
-        r *= 2
+            k = 0
+            while k < r and g == 1:
+                ys = y
+                for _ in range(min(m, r - k)):
+                    y = (pow(y, 2, n) + c) % n
+                    q = q * abs(x - y) % n
+                g = math.gcd(q, n)
+                k += m
+            r *= 2
+
         if g == n:
             while True:
                 ys = (pow(ys, 2, n) + c) % n
                 g = math.gcd(abs(x - ys), n)
                 if g > 1:
                     break
-    return g
+        if 1 < g < n:
+            return g  # valid factor found clearly
+    return None  # Explicit failure if no factor found after retries
 
 
 def save_factors_csv(number, factors, filename):
@@ -159,6 +169,11 @@ def factor_large_number(number, start_digits, end_digits):
     save_factors_csv(
         original_number, factors, f"factoring_results_{int(time.time())}.csv"
     )
+
+
+def interactive_factorization():
+    # TODO: Implement the interactive factorization logic here
+    print("Interactive factorization is not yet implemented.")
 
 
 if __name__ == "__main__":
