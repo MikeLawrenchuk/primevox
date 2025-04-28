@@ -1,6 +1,7 @@
-from sympy import primerange, isprime
-from typing import List, Tuple
 import csv
+from typing import List, Tuple
+
+from sympy import isprime, primerange
 
 
 def is_twin_prime(p1: int, p2: int) -> bool:

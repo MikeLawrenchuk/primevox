@@ -1,8 +1,9 @@
-from sympy import primerange, factorint, isprime
-import random
 import csv
-import time
 import math
+import random
+import time
+
+from sympy import factorint, isprime, primerange
 
 
 def generate_candidate_primes(start, end):
@@ -38,8 +39,6 @@ def pollards_rho(n, max_iterations=10000, retries=5):
     return None  # Explicitly indicate if factoring failed after retries
 
 
-
-
 def brent_factor(n, max_iterations=10000, retries=5):
     """Brent's algorithm for robust integer factorization."""
     if n % 2 == 0:
@@ -48,7 +47,11 @@ def brent_factor(n, max_iterations=10000, retries=5):
         return n
 
     for attempt in range(retries):
-        y, c, m = random.randint(1, n - 1), random.randint(1, n - 1), random.randint(1, n - 1)
+        y, c, m = (
+            random.randint(1, n - 1),
+            random.randint(1, n - 1),
+            random.randint(1, n - 1),
+        )
         g, r, q = 1, 1, 1
 
         while g == 1 and r < max_iterations:
@@ -74,7 +77,6 @@ def brent_factor(n, max_iterations=10000, retries=5):
         if 1 < g < n:
             return g  # valid factor found clearly
     return None  # Explicit failure if no factor found after retries
-
 
 
 def save_factors_csv(number, factors, filename):
@@ -168,10 +170,10 @@ def factor_large_number(number, start_digits, end_digits):
         original_number, factors, f"factoring_results_{int(time.time())}.csv"
     )
 
+
 def interactive_factorization():
     # TODO: Implement the interactive factorization logic here
     print("Interactive factorization is not yet implemented.")
-
 
 
 if __name__ == "__main__":
