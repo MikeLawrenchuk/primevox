@@ -1,13 +1,11 @@
 import pytest
-from sympy import isprime
-
 from pv_sdk.factoring import (
-    brent_factor,
-    factor_large_number,
     generate_candidate_primes,
     pollards_rho,
+    brent_factor,
+    factor_large_number
 )
-
+from sympy import isprime
 
 @pytest.mark.timeout(5)
 def test_generate_candidate_primes():
@@ -42,7 +40,8 @@ def test_brent_factor():
         factor_result = brent_factor(composite)
         if factor_result in [101, 103]:
             break
-    assert factor_result in [101, 103], f"Failed Brent factoring: got {factor_result}"
+    assert factor_result in [101, 103], f"Brent factoring failed: got {factor_result}"
+
 
 @pytest.mark.timeout(5)
 def test_factor_large_number():

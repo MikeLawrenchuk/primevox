@@ -39,37 +39,42 @@ def pollards_rho(n, max_iterations=10000, retries=5):
 
 
 
-def brent_factor(n):
-    """Brent's Algorithm for integer factorization, robustly handling edge cases."""
+
+def brent_factor(n, max_iterations=10000, retries=5):
+    """Brent's algorithm for robust integer factorization."""
     if n % 2 == 0:
         return 2
-    if n % 3 == 0:
-        return 3
     if isprime(n):
         return n
 
-    y, c, m = random.randrange(1, n), random.randrange(1, n), random.randrange(1, n)
-    g, r, q = 1, 1, 1
-    while g == 1:
-        x = y
-        for _ in range(r):
-            y = (pow(y, 2, n) + c) % n
-        k = 0
-        while k < r and g == 1:
-            ys = y
-            for _ in range(min(m, r - k)):
+    for attempt in range(retries):
+        y, c, m = random.randint(1, n - 1), random.randint(1, n - 1), random.randint(1, n - 1)
+        g, r, q = 1, 1, 1
+
+        while g == 1 and r < max_iterations:
+            x = y
+            for _ in range(r):
                 y = (pow(y, 2, n) + c) % n
-                q = q * abs(x - y) % n
-            g = math.gcd(q, n)
-            k += m
-        r *= 2
+            k = 0
+            while k < r and g == 1:
+                ys = y
+                for _ in range(min(m, r - k)):
+                    y = (pow(y, 2, n) + c) % n
+                    q = q * abs(x - y) % n
+                g = math.gcd(q, n)
+                k += m
+            r *= 2
+
         if g == n:
             while True:
                 ys = (pow(ys, 2, n) + c) % n
                 g = math.gcd(abs(x - ys), n)
                 if g > 1:
                     break
-    return g
+        if 1 < g < n:
+            return g  # valid factor found clearly
+    return None  # Explicit failure if no factor found after retries
+
 
 
 def save_factors_csv(number, factors, filename):
