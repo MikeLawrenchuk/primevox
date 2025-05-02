@@ -11,19 +11,19 @@ Public API:
   - factor_frequencies(n: int) -> Dict[int, int]
   - factor_and_map(n: int) -> List[str]
 """
-import random
-import math
 import logging
-from typing import List, Optional, Dict
+import math
+import random
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 _digit_to_vowel: Dict[str, str] = {
-    '1': 'A',  # primes ending in 1 → A
-    '3': 'E',  # primes ending in 3 → E
-    '5': 'Y',  # primes ending in 5 → Y
-    '7': 'I',  # primes ending in 7 → I
-    '9': 'O',  # primes ending in 9 → O
+    "1": "A",  # primes ending in 1 → A
+    "3": "E",  # primes ending in 3 → E
+    "5": "Y",  # primes ending in 5 → Y
+    "7": "I",  # primes ending in 7 → I
+    "9": "O",  # primes ending in 9 → O
 }
 
 
@@ -40,8 +40,8 @@ def prime_to_vowel_notation(prime: int) -> str:
         A string of vowel characters representing the prime.
     """
     if prime == 2:
-        return 'U'
-    return ''.join(_digit_to_vowel.get(d, d) for d in str(prime))
+        return "U"
+    return "".join(_digit_to_vowel.get(d, d) for d in str(prime))
 
 
 def _pollards_rho_brent(n: int, max_iter: int = 100_000) -> Optional[int]:
