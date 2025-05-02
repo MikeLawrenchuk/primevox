@@ -27,18 +27,18 @@ def main():
         )
     )
 
-    # —— Prime Module usage —— 
+    # —— Prime Module usage ——
     prime_limit = 50
     orig_primes, orig_vowels = generate_primes_and_map(prime_limit)
     print(colorize(f"✅ Generated primes up to {prime_limit}:", TerminalColors.GREEN))
     print(orig_primes)
 
-    # —— Composite Mappings —— 
+    # —— Composite Mappings ——
     composites = create_composite_mappings(orig_primes, orig_vowels)
     print(colorize("\n✅ Composite mappings sample (first 3):", TerminalColors.GREEN))
     print(composites[:3])
 
-    # —— High-performance Factoring Module —— 
+    # —— High-performance Factoring Module ——
     number_to_factor = 1001  # factors: 7, 11, 13
     print(colorize(f"\n🧮 Factoring number: {number_to_factor}", TerminalColors.CYAN))
 
@@ -48,7 +48,7 @@ def main():
     mapped = factor_and_map(number_to_factor)
     print(colorize(f"🔤 Vowel-mapped factors: {mapped}", TerminalColors.CYAN))
 
-    # —— Analysis Module —— 
+    # —— Analysis Module ——
     modulus = 7
     modular_results = explore_modular_arithmetic(orig_primes, modulus)
     print(
@@ -67,7 +67,7 @@ def main():
     p_val = perform_statistical_analysis(freq)
     print(colorize(f"\n📌 Chi-square test p-value: {p_val:.4f}", TerminalColors.CYAN))
 
-    # —— Visualization Module —— 
+    # —— Visualization Module ——
     # Use the ORIGINAL lists so you see all 15 primes up to 50
     graphical_representation_with_labels(orig_primes, orig_vowels)
 
@@ -80,7 +80,7 @@ def main():
     print(colorize("\n📍 Graph centrality measures:", TerminalColors.BLUE))
     print(centralities)
 
-    # —— Twin Prime Module —— 
+    # —— Twin Prime Module ——
     twin_primes = find_twin_primes(prime_limit)
     twin_prime_count = count_twin_primes(prime_limit)
     print(
@@ -93,7 +93,7 @@ def main():
         )
     )
 
-    # —— Documentation Module —— 
+    # —— Documentation Module ——
     results = {
         "primes": orig_primes,
         "modular_results": modular_results,
@@ -102,7 +102,7 @@ def main():
     json_filename = append_timestamp("PrimeVox_results_summary.json")
     save_to_json(json_filename, results)
 
-    # —— Historical Analysis Module —— 
+    # —— Historical Analysis Module ——
     append_historical_record(
         "historical_data.json",
         "recent_prime_analysis",

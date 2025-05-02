@@ -11,20 +11,21 @@ Public API:
   - factor_frequencies(n: int) -> Dict[int, int]
   - factor_and_map(n: int) -> List[str]
 """
-import random
-import math
 import logging
-from typing import List, Optional, Dict
+import math
+import random
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 _digit_to_vowel: Dict[str, str] = {
-    '1': 'A',  # primes ending in 1 → A
-    '3': 'E',  # primes ending in 3 → E
-    '5': 'Y',  # primes ending in 5 → Y
-    '7': 'I',  # primes ending in 7 → I
-    '9': 'O',  # primes ending in 9 → O
+    "1": "A",  # primes ending in 1 → A
+    "3": "E",  # primes ending in 3 → E
+    "5": "Y",  # primes ending in 5 → Y
+    "7": "I",  # primes ending in 7 → I
+    "9": "O",  # primes ending in 9 → O
 }
+
 
 def prime_to_vowel_notation(prime: int) -> str:
     """
@@ -39,8 +40,9 @@ def prime_to_vowel_notation(prime: int) -> str:
         A string of vowel characters representing the prime.
     """
     if prime == 2:
-        return 'U'
-    return ''.join(_digit_to_vowel.get(d, d) for d in str(prime))
+        return "U"
+    return "".join(_digit_to_vowel.get(d, d) for d in str(prime))
+
 
 def _pollards_rho_brent(n: int, max_iter: int = 100_000) -> Optional[int]:
     """
@@ -83,6 +85,7 @@ def _pollards_rho_brent(n: int, max_iter: int = 100_000) -> Optional[int]:
 
     return g if g and g < n else None
 
+
 def _is_prime(n: int) -> bool:
     """
     Deterministic Miller-Rabin for n < 2^64 using fixed bases.
@@ -116,6 +119,7 @@ def _is_prime(n: int) -> bool:
             return False
     return True
 
+
 def factor(n: int) -> List[int]:
     """
     Recursively factor an integer into its prime factors.
@@ -137,6 +141,7 @@ def factor(n: int) -> List[int]:
         divisor = _pollards_rho_brent(n)
     return factor(divisor) + factor(n // divisor)
 
+
 def factor_frequencies(n: int) -> Dict[int, int]:
     """
     Count prime factor multiplicities for a composite number.
@@ -150,6 +155,7 @@ def factor_frequencies(n: int) -> Dict[int, int]:
     for p in factor(n):
         freqs[p] = freqs.get(p, 0) + 1
     return freqs
+
 
 def factor_and_map(number: int) -> List[str]:
     """
